@@ -9,19 +9,28 @@ ITEM_DOCUMENT = 9
 
 MAX_CHARS_PER_REQUEST = 4500  # Edge TTS safe limit
 
-def extract_paragraphs_from_epub(epub_path):
+def extract_text_from_epub(epub_path):
     book = epub.read_epub(epub_path)
     paragraphs = []
+
     for item in book.get_items():
         if item.get_type() == 9:  # ITEM_DOCUMENT
             soup = BeautifulSoup(item.get_content(), 'html.parser')
-            for para in soup.find_all('p'):
-                text = para.get_text()
-                # Important: fix linebreaks inside paragraph
-                clean_text = ' '.join(text.split())  # replaces all \n and extra spaces with a single space
+            
+            # Remove unwanted elements (style, script, head, etc.)
+            for tag in soup(['script', 'style', 'head', 'title', 'meta', '[document]']):
+                tag.decompose()
+
+            # Now grab all visible text
+            texts = soup.stripped_strings  # Generator: yields clean text nodes
+
+            for text in texts:
+                clean_text = ' '.join(text.split())
                 if clean_text:
                     paragraphs.append(clean_text)
+
     return paragraphs
+
 
 
 
@@ -61,13 +70,14 @@ async def text_to_mp3(text_chunks, output_path, voice="en-US-AriaNeural"):
             async for chunk_data in communicate.stream():
                 if chunk_data["type"] == "audio":
                     out_f.write(chunk_data["data"])
+            break
 
 
 
 
 
 def create_audiobook(epub_path, output_mp3_path, voice="en-US-AriaNeural"):
-    paragraphs = extract_paragraphs_from_epub(epub_path)
+    paragraphs = extract_text_from_epub(epub_path)
 
     # Combine paragraphs carefully into bigger chunks (still <=4500 chars)
     chunks = []
@@ -91,7 +101,7 @@ if __name__ == "__main__":
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
     filename = "Nick_Carter_-_[Killmaster_027]_-_Assignment_Israel"
-    epub_path = os.path.join(BASE_DIR, filename+".epub")
-    output_path = os.path.join(BASE_DIR, filename+".mp3")
+    epub_path = os.path.join(BASE_DIR, "epub/" + filename+".epub")
+    output_path = os.path.join(BASE_DIR, "mp3/" + filename+".mp3")
 
     create_audiobook(epub_path, output_path, voice="en-GB-RyanNeural")
