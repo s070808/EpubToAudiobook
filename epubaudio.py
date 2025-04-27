@@ -33,29 +33,6 @@ def extract_text_from_epub(epub_path):
 
 
 
-
-def split_text_into_chunks(text, max_length):
-    paragraphs = text.split('\n')  # assume \n separates logical paragraphs
-    chunks = []
-    current_chunk = ""
-
-    for para in paragraphs:
-        para = para.strip()
-        if not para:
-            continue  # skip empty lines
-
-        if len(current_chunk) + len(para) + 1 < max_length:
-            current_chunk += para + "\n"
-        else:
-            chunks.append(current_chunk.strip())
-            current_chunk = para + "\n"
-
-    if current_chunk:
-        chunks.append(current_chunk.strip())
-
-    return chunks
-
-
 async def text_to_mp3(text_chunks, output_path, voice="en-US-AriaNeural"):
     with open(output_path, 'wb') as out_f:
         total_chunks = len(text_chunks)
