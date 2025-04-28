@@ -33,7 +33,7 @@ pip install edge-tts ebooklib beautifulsoup4
 
 1. Place your `.epub` file in the sub-folder `/epub/` related to the script.
 
-2. Update the filename at the top of the script, in the "const" value:
+2. Update the filename at the top of the script, in the "const" value, no extension (code assumes epub input):
 
 ```python
 FILENAME = "your_epub_filename_without_extension"
