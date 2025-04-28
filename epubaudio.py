@@ -15,7 +15,6 @@ MAX_CHUNK_SIZE = 4000  # Maximum number of characters per text chunk (edge_tts A
 # File and folder paths (they will be filled later)
 FILENAME = "Nick_Carter_-_[Killmaster_027]_-_Assignment_Israel"
 EPUB_PATH = ''
-PARAGRAPHS_PATH = ''
 CHAPTERS_PATH = ''
 MP3_PATH = ''
 
@@ -106,14 +105,6 @@ def split_paragraphs_into_chunks(paragraphs):
     return chunks
 
 
-def save_paragraphs_to_file(paragraphs):
-    """Save all extracted paragraphs into a plain text file."""
-    with open(PARAGRAPHS_PATH, 'w', encoding='utf-8') as f:
-        for para in paragraphs:
-            f.write(para)
-            f.write("\n\n")  # Double newlines between paragraphs
-
-
 def save_chapters_to_file(chapters):
     """Save each chapter as a separate text file with padded numbering."""
     for i, chap in enumerate(chapters):
@@ -149,9 +140,6 @@ def extract_epub_to_clean_text():
     """Main flow: extract paragraphs from EPUB and save chapters and full text."""
     # Force a starting heading so the whole book is handled cleanly
     paragraphs = [SECTION_HEADER_MARKER] + extract_paragraphs_from_epub()
-
-    # Save the whole text into paragraphs.txt
-    save_paragraphs_to_file(paragraphs)
 
     # Split and save into chapter files
     chapters = split_paragraphs_by_heading_marker(paragraphs)
@@ -202,7 +190,7 @@ async def process_all_chapters_to_mp3():
 
 
 def preamble():
-    global EPUB_PATH, PARAGRAPHS_PATH, CHAPTERS_PATH, MP3_PATH  # Tell Python we are modifying the global vars
+    global EPUB_PATH, CHAPTERS_PATH, MP3_PATH  # Tell Python we are modifying the global vars
 
     # Set base paths relative to the script location
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -217,7 +205,6 @@ def preamble():
 
     # Now define global paths
     EPUB_PATH = os.path.join(base_dir_epub, FILENAME + ".epub")
-    PARAGRAPHS_PATH = os.path.join(base_dir_txt, "paragraphs.txt")
     CHAPTERS_PATH = base_dir_txt
     MP3_PATH = base_dir_mp3
 
