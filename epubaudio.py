@@ -17,6 +17,8 @@ CHAPTERS_PATH = ''
 CHUNKS_PATH = ''
 MP3_PATH = ''
 
+CHAPTER_KEY = '_chapter_'
+
 def emphasize_headings(soup):
     for level in range(1, 7):  # for h1 to h6
         for tag in soup.find_all(f'h{level}'):
@@ -115,7 +117,7 @@ def save_paragraphs_to_file(paragraphs):
 
 def save_chapters_to_file(chapters):
     for i, chap in enumerate(chapters):
-        path = CHAPTERS_PATH + f'_chapter_{i}.txt'
+        path = os.path.join(CHAPTERS_PATH, f'{CHAPTER_KEY}{i}.txt')#CHAPTERS_PATH + f'{CHAPTER_KEY}{i}.txt'
         with open(path, 'w', encoding='utf-8') as f:
             for para in chap:
                 cleaned_para = para.replace(SECTION_HEADER_MARKER, '').strip()
