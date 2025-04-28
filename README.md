@@ -14,47 +14,55 @@ It:
 
 ## 🔧 Requirements
 
+Install or update pip:
+
+```bash
+python -m pip install --upgrade pip
+```
+
+
 Install dependencies via pip:
 
 ```bash
-pip install ebooklib beautifulsoup4 edge-tts
+pip install edge-tts ebooklib beautifulsoup4
 ```
 
 ---
 
 ## 🚀 Usage
 
-1. Place your `.epub` file in the same directory as the script.
+1. Place your `.epub` file in the sub-folder `/epub/` related to the script.
 
-2. Update the filename at the bottom of the script:
+2. Update the filename at the top of the script, in the "const" value:
 
 ```python
-filename = "your_epub_filename_without_extension"
+FILENAME = "your_epub_filename_without_extension"
 ```
 
 Example:
 
 ```python
-filename = "Nick_Carter_-_[Killmaster_027]_-_Assignment_Israel"
+FILENAME = "Nick_Carter_-_[Killmaster_027]_-_Assignment_Israel"
 ```
 
 3. Run the script:
 
 ```bash
-python your_script_name.py
+python epubaudio.py
 ```
 
-It will generate an MP3 file like:
+It will generate several MP3 files, one for each chapter, like:
 
 ```
-Nick_Carter_-_[Killmaster_027]_-_Assignment_Israel.mp3
+/mp3/{FILENAME}/chapter_0000.mp3
+/mp3/{FILENAME}/chapter_0001.mp3
+/mp3/{FILENAME}/chapter_0002.mp3
+etc
 ```
-
-in the same folder.
 
 ---
 
-## 🎙️ Choosing a Different Voice
+## 🎙️ Choosing a Different Voice (unsupported for now)
 
 You can specify different voices by changing the `voice` parameter in `create_audiobook()`:
 
@@ -76,10 +84,8 @@ Full voice list available [here](https://learn.microsoft.com/en-us/azure/ai-serv
 
 ## 📜 How It Works
 
-- **Extract paragraphs**: Finds `<p>` tags inside the EPUB HTML, reads their text.
-- **Clean text**: Removes unwanted `\n` line breaks inside paragraphs for smooth narration.
-- **Chunk text**: Groups paragraphs together until close to the API limit (~4500 characters).
-- **TTS Conversion**: Each chunk is streamed to Edge-TTS, audio is saved continuously into a growing MP3 file.
+- **Creates a file for each chapter**: Denoted by <hx> tags
+- **Creates an mp3**: For each chapter, in a subfolder denoted by the FILENAME variable
 
 Progress is printed for each chunk processed, so you can track how far the conversion has gone.
 
