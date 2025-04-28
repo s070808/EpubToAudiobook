@@ -6,7 +6,7 @@ This script converts an `.epub` ebook into a spoken `.mp3` audiobook using Micro
 It:
 - Extracts paragraphs from an EPUB file.
 - Cleans up weird linebreaks and merges natural paragraphs.
-- Splits the text into safe-size chunks for TTS API limits (~4500 characters per chunk).
+- Splits the text into safe-size chunks for TTS API limits (~4000 characters per chunk).
 - Converts each chunk into audio and saves the result into a single MP3 file.
 - Supports selecting different natural-sounding Microsoft TTS voices (like US, UK, Australian accents, etc.)
 
