@@ -66,7 +66,7 @@ async def text_to_mp3(text_chunks, output_path, voice="en-US-AriaNeural"):
             async for chunk_data in communicate.stream():
                 if chunk_data["type"] == "audio":
                     out_f.write(chunk_data["data"])
-            break# - use to debug rendering, only creates a single chunk
+            #break# - use to debug rendering, only creates a single chunk
 
 
 def load_chunks_from_file(output_path):
@@ -107,13 +107,14 @@ def save_paragraphs_to_file(paragraphs):
 
 def save_chapters_to_file(chapters):
     for i, chap in enumerate(chapters):
-        path = os.path.join(CHAPTERS_PATH, f'{CHAPTER_KEY}{i}.txt')
+        path = os.path.join(CHAPTERS_PATH, f'{CHAPTER_KEY}{i:04d}.txt')  # <-- fixed here
         with open(path, 'w', encoding='utf-8') as f:
             for para in chap:
                 cleaned_para = para.replace(SECTION_HEADER_MARKER, '').strip()
                 if cleaned_para:
                     f.write(cleaned_para)
                     f.write("\n\n")
+
 
 
 def split_paragraphs_by_heading_marker(paragraphs):
@@ -170,12 +171,13 @@ async def process_all_chapters_to_mp3():
         paragraphs = load_paragraphs_from_file(chapter_file)
         chunks = split_paragraphs_into_chunks(paragraphs)
 
-        chapter_index = os.path.splitext(os.path.basename(chapter_file))[0].split("_")[-1]
-        output_mp3_path = os.path.join(MP3_PATH, f"chapter_{chapter_index}.mp3")
+        chapter_num = int(os.path.splitext(os.path.basename(chapter_file))[0].split("_")[-1])  # <-- parse as int
+        output_mp3_path = os.path.join(MP3_PATH, f"chapter_{chapter_num:04d}.mp3")  # <-- fixed here
 
         os.makedirs(MP3_PATH, exist_ok=True)
 
         await text_to_mp3(chunks, output_mp3_path, voice="en-US-AriaNeural")
+
 
 # ---- END OF NEW FUNCTIONS ----
 
